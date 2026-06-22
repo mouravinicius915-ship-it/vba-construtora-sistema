@@ -31,16 +31,21 @@ export default function ContasReceberPage() {
     !filterStatus || c.status === filterStatus
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingId) {
-      updateContaReceber(editingId, formData);
-      setEditingId(null);
-    } else {
-      addContaReceber(formData as any);
+    try {
+      if (editingId) {
+        await updateContaReceber(editingId, formData);
+        setEditingId(null);
+      } else {
+        await addContaReceber(formData as any);
+      }
+      resetForm();
+      setShowModal(false);
+    } catch (error) {
+      console.error('Erro ao salvar conta a receber:', error);
+      alert('Erro ao salvar conta a receber');
     }
-    resetForm();
-    setShowModal(false);
   };
 
   const resetForm = () => {
@@ -75,9 +80,14 @@ export default function ContasReceberPage() {
     setShowModal(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Tem certeza que deseja deletar esta conta?')) {
-      deleteContaReceber(id);
+      try {
+        await deleteContaReceber(id);
+      } catch (error) {
+        console.error('Erro ao deletar conta a receber:', error);
+        alert('Erro ao deletar conta a receber');
+      }
     }
   };
 

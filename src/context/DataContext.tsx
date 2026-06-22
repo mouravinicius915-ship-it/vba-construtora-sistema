@@ -1,7 +1,8 @@
 'use client';
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Cliente, Fornecedor, Obra, ContaPagar, ContaReceber, Funcionario } from '@/lib/types';
+import { supabase } from '@/lib/supabase';
 
 interface DataContextType {
   clientes: Cliente[];
@@ -10,151 +11,71 @@ interface DataContextType {
   contasPagar: ContaPagar[];
   contasReceber: ContaReceber[];
   funcionarios: Funcionario[];
+  loading: boolean;
 
-  // Clientes
-  addCliente: (cliente: Omit<Cliente, 'id' | 'criado_em'>) => void;
-  updateCliente: (id: string, cliente: Partial<Cliente>) => void;
-  deleteCliente: (id: string) => void;
+  addCliente: (cliente: Omit<Cliente, 'id' | 'criado_em'>) => Promise<void>;
+  updateCliente: (id: string, cliente: Partial<Cliente>) => Promise<void>;
+  deleteCliente: (id: string) => Promise<void>;
 
-  // Obras
-  addObra: (obra: Omit<Obra, 'id' | 'criado_em'>) => void;
-  updateObra: (id: string, obra: Partial<Obra>) => void;
-  deleteObra: (id: string) => void;
+  addObra: (obra: Omit<Obra, 'id' | 'criado_em'>) => Promise<void>;
+  updateObra: (id: string, obra: Partial<Obra>) => Promise<void>;
+  deleteObra: (id: string) => Promise<void>;
 
-  // Fornecedores
-  addFornecedor: (fornecedor: Omit<Fornecedor, 'id' | 'criado_em'>) => void;
-  updateFornecedor: (id: string, fornecedor: Partial<Fornecedor>) => void;
-  deleteFornecedor: (id: string) => void;
+  addFornecedor: (fornecedor: Omit<Fornecedor, 'id' | 'criado_em'>) => Promise<void>;
+  updateFornecedor: (id: string, fornecedor: Partial<Fornecedor>) => Promise<void>;
+  deleteFornecedor: (id: string) => Promise<void>;
 
-  // Contas a pagar
-  addContaPagar: (conta: Omit<ContaPagar, 'id' | 'criado_em'>) => void;
-  updateContaPagar: (id: string, conta: Partial<ContaPagar>) => void;
-  deleteContaPagar: (id: string) => void;
+  addContaPagar: (conta: Omit<ContaPagar, 'id' | 'criado_em'>) => Promise<void>;
+  updateContaPagar: (id: string, conta: Partial<ContaPagar>) => Promise<void>;
+  deleteContaPagar: (id: string) => Promise<void>;
 
-  // Contas a receber
-  addContaReceber: (conta: Omit<ContaReceber, 'id' | 'criado_em'>) => void;
-  updateContaReceber: (id: string, conta: Partial<ContaReceber>) => void;
-  deleteContaReceber: (id: string) => void;
+  addContaReceber: (conta: Omit<ContaReceber, 'id' | 'criado_em'>) => Promise<void>;
+  updateContaReceber: (id: string, conta: Partial<ContaReceber>) => Promise<void>;
+  deleteContaReceber: (id: string) => Promise<void>;
 
-  // Funcionários
-  addFuncionario: (funcionario: Omit<Funcionario, 'id' | 'criado_em'>) => void;
-  updateFuncionario: (id: string, funcionario: Partial<Funcionario>) => void;
-  deleteFuncionario: (id: string) => void;
+  addFuncionario: (funcionario: Omit<Funcionario, 'id' | 'criado_em'>) => Promise<void>;
+  updateFuncionario: (id: string, funcionario: Partial<Funcionario>) => Promise<void>;
+  deleteFuncionario: (id: string) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-const generateId = () => Math.random().toString(36).substr(2, 9);
-
-// Dados mock iniciais
-const INITIAL_CLIENTES: Cliente[] = [
-  {
-    id: '1',
-    nome: 'João Silva Construção',
-    tipo: 'pessoa_juridica',
-    cpf_cnpj: '12.345.678/0001-90',
-    telefone: '(11) 3333-4444',
-    whatsapp: '(11) 99999-8888',
-    email: 'joao@construcao.com.br',
-    endereco: 'Rua das Flores, 100 - São Paulo, SP',
-    observacoes: 'Cliente prioritário',
-    ativo: true,
-    criado_em: new Date().toISOString(),
-  },
-  {
-    id: '2',
-    nome: 'Maria Oliveira',
-    tipo: 'pessoa_fisica',
-    cpf_cnpj: '123.456.789-00',
-    telefone: '(11) 2222-3333',
-    whatsapp: '(11) 98888-7777',
-    email: 'maria@email.com',
-    endereco: 'Avenida Paulista, 1000 - São Paulo, SP',
-    observacoes: '',
-    ativo: true,
-    criado_em: new Date().toISOString(),
-  },
-];
-
-const INITIAL_OBRAS: Obra[] = [
-  {
-    id: '1',
-    nome: 'Central Plaza',
-    endereco: 'Rua das Flores, 100 - São Paulo, SP',
-    cliente_id: '1',
-    responsavel_id: 'admin',
-    status: 'em_andamento',
-    data_inicio: '2026-01-15',
-    data_prevista_fim: '2026-08-30',
-    orcamento_previsto: 500000,
-    observacoes: 'Projeto comercial',
-    criado_em: new Date().toISOString(),
-  },
-  {
-    id: '2',
-    nome: 'Residential Sunset',
-    endereco: 'Avenida Paulista, 1000 - São Paulo, SP',
-    cliente_id: '2',
-    responsavel_id: 'admin',
-    status: 'em_andamento',
-    data_inicio: '2026-03-01',
-    data_prevista_fim: '2026-10-15',
-    orcamento_previsto: 750000,
-    observacoes: 'Condomínio residencial',
-    criado_em: new Date().toISOString(),
-  },
-];
-
-const INITIAL_FORNECEDORES: Fornecedor[] = [
-  {
-    id: '1',
-    nome: 'Construtora ABC Materiais',
-    tipo: 'pessoa_juridica',
-    cpf_cnpj: '98.765.432/0001-10',
-    categoria: 'Materiais de Construção',
-    telefone: '(11) 4444-5555',
-    whatsapp: '(11) 97777-6666',
-    email: 'contato@abcmateriais.com.br',
-    endereco: 'Rua Industrial, 500 - São Paulo, SP',
-    ativo: true,
-    criado_em: new Date().toISOString(),
-  },
-];
-
-const INITIAL_CONTAS_PAGAR: ContaPagar[] = [
-  {
-    id: '1',
-    descricao: 'Pagamento - Fornecedor ABC',
-    fornecedor_id: '1',
-    obra_id: '1',
-    categoria_id: 'materiais',
-    valor: 5000,
-    data_vencimento: '2026-06-20',
-    status: 'pendente',
-    criado_em: new Date().toISOString(),
-  },
-];
-
-const INITIAL_CONTAS_RECEBER: ContaReceber[] = [
-  {
-    id: '1',
-    descricao: 'Fatura nº 001 - Central Plaza',
-    cliente_id: '1',
-    obra_id: '1',
-    valor: 50000,
-    data_vencimento: '2026-06-20',
-    status: 'pendente',
-    criado_em: new Date().toISOString(),
-  },
-];
-
 export function DataProvider({ children }: { children: ReactNode }) {
-  const [clientes, setClientes] = useState<Cliente[]>(INITIAL_CLIENTES);
-  const [obras, setObras] = useState<Obra[]>(INITIAL_OBRAS);
-  const [fornecedores, setFornecedores] = useState<Fornecedor[]>(INITIAL_FORNECEDORES);
-  const [contasPagar, setContasPagar] = useState<ContaPagar[]>(INITIAL_CONTAS_PAGAR);
-  const [contasReceber, setContasReceber] = useState<ContaReceber[]>(INITIAL_CONTAS_RECEBER);
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [obras, setObras] = useState<Obra[]>([]);
+  const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
+  const [contasPagar, setContasPagar] = useState<ContaPagar[]>([]);
+  const [contasReceber, setContasReceber] = useState<ContaReceber[]>([]);
   const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadAllData();
+  }, []);
+
+  const loadAllData = async () => {
+    try {
+      const [clientesRes, obrasRes, fornecedoresRes, contaspagarRes, contasreceberRes, funcionariosRes] = await Promise.all([
+        supabase.from('clientes').select('*'),
+        supabase.from('obras').select('*'),
+        supabase.from('fornecedores').select('*'),
+        supabase.from('contas_pagar').select('*'),
+        supabase.from('contas_receber').select('*'),
+        supabase.from('funcionarios').select('*'),
+      ]);
+
+      if (clientesRes.data) setClientes(clientesRes.data as Cliente[]);
+      if (obrasRes.data) setObras(obrasRes.data as Obra[]);
+      if (fornecedoresRes.data) setFornecedores(fornecedoresRes.data as Fornecedor[]);
+      if (contaspagarRes.data) setContasPagar(contaspagarRes.data as ContaPagar[]);
+      if (contasreceberRes.data) setContasReceber(contasreceberRes.data as ContaReceber[]);
+      if (funcionariosRes.data) setFuncionarios(funcionariosRes.data as Funcionario[]);
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const value: DataContextType = {
     clientes,
@@ -163,64 +84,101 @@ export function DataProvider({ children }: { children: ReactNode }) {
     contasPagar,
     contasReceber,
     funcionarios,
+    loading,
 
-    addCliente: (cliente) => {
-      setClientes([...clientes, { ...cliente, id: generateId(), criado_em: new Date().toISOString() } as Cliente]);
+    addCliente: async (cliente) => {
+      const { data, error } = await supabase.from('clientes').insert([cliente]).select().single();
+      if (error) throw error;
+      if (data) setClientes([...clientes, data as Cliente]);
     },
-    updateCliente: (id, updates) => {
+    updateCliente: async (id, updates) => {
+      const { error } = await supabase.from('clientes').update(updates).eq('id', id);
+      if (error) throw error;
       setClientes(clientes.map(c => c.id === id ? { ...c, ...updates } : c));
     },
-    deleteCliente: (id) => {
+    deleteCliente: async (id) => {
+      const { error } = await supabase.from('clientes').delete().eq('id', id);
+      if (error) throw error;
       setClientes(clientes.filter(c => c.id !== id));
     },
 
-    addObra: (obra) => {
-      setObras([...obras, { ...obra, id: generateId(), criado_em: new Date().toISOString() } as Obra]);
+    addObra: async (obra) => {
+      const { data, error } = await supabase.from('obras').insert([obra]).select().single();
+      if (error) throw error;
+      if (data) setObras([...obras, data as Obra]);
     },
-    updateObra: (id, updates) => {
+    updateObra: async (id, updates) => {
+      const { error } = await supabase.from('obras').update(updates).eq('id', id);
+      if (error) throw error;
       setObras(obras.map(o => o.id === id ? { ...o, ...updates } : o));
     },
-    deleteObra: (id) => {
+    deleteObra: async (id) => {
+      const { error } = await supabase.from('obras').delete().eq('id', id);
+      if (error) throw error;
       setObras(obras.filter(o => o.id !== id));
     },
 
-    addFornecedor: (fornecedor) => {
-      setFornecedores([...fornecedores, { ...fornecedor, id: generateId(), criado_em: new Date().toISOString() } as Fornecedor]);
+    addFornecedor: async (fornecedor) => {
+      const { data, error } = await supabase.from('fornecedores').insert([fornecedor]).select().single();
+      if (error) throw error;
+      if (data) setFornecedores([...fornecedores, data as Fornecedor]);
     },
-    updateFornecedor: (id, updates) => {
+    updateFornecedor: async (id, updates) => {
+      const { error } = await supabase.from('fornecedores').update(updates).eq('id', id);
+      if (error) throw error;
       setFornecedores(fornecedores.map(f => f.id === id ? { ...f, ...updates } : f));
     },
-    deleteFornecedor: (id) => {
+    deleteFornecedor: async (id) => {
+      const { error } = await supabase.from('fornecedores').delete().eq('id', id);
+      if (error) throw error;
       setFornecedores(fornecedores.filter(f => f.id !== id));
     },
 
-    addContaPagar: (conta) => {
-      setContasPagar([...contasPagar, { ...conta, id: generateId(), criado_em: new Date().toISOString() } as ContaPagar]);
+    addContaPagar: async (conta) => {
+      const { data, error } = await supabase.from('contas_pagar').insert([conta]).select().single();
+      if (error) throw error;
+      if (data) setContasPagar([...contasPagar, data as ContaPagar]);
     },
-    updateContaPagar: (id, updates) => {
+    updateContaPagar: async (id, updates) => {
+      const { error } = await supabase.from('contas_pagar').update(updates).eq('id', id);
+      if (error) throw error;
       setContasPagar(contasPagar.map(c => c.id === id ? { ...c, ...updates } : c));
     },
-    deleteContaPagar: (id) => {
+    deleteContaPagar: async (id) => {
+      const { error } = await supabase.from('contas_pagar').delete().eq('id', id);
+      if (error) throw error;
       setContasPagar(contasPagar.filter(c => c.id !== id));
     },
 
-    addContaReceber: (conta) => {
-      setContasReceber([...contasReceber, { ...conta, id: generateId(), criado_em: new Date().toISOString() } as ContaReceber]);
+    addContaReceber: async (conta) => {
+      const { data, error } = await supabase.from('contas_receber').insert([conta]).select().single();
+      if (error) throw error;
+      if (data) setContasReceber([...contasReceber, data as ContaReceber]);
     },
-    updateContaReceber: (id, updates) => {
+    updateContaReceber: async (id, updates) => {
+      const { error } = await supabase.from('contas_receber').update(updates).eq('id', id);
+      if (error) throw error;
       setContasReceber(contasReceber.map(c => c.id === id ? { ...c, ...updates } : c));
     },
-    deleteContaReceber: (id) => {
+    deleteContaReceber: async (id) => {
+      const { error } = await supabase.from('contas_receber').delete().eq('id', id);
+      if (error) throw error;
       setContasReceber(contasReceber.filter(c => c.id !== id));
     },
 
-    addFuncionario: (funcionario) => {
-      setFuncionarios([...funcionarios, { ...funcionario, id: generateId(), criado_em: new Date().toISOString() } as Funcionario]);
+    addFuncionario: async (funcionario) => {
+      const { data, error } = await supabase.from('funcionarios').insert([funcionario]).select().single();
+      if (error) throw error;
+      if (data) setFuncionarios([...funcionarios, data as Funcionario]);
     },
-    updateFuncionario: (id, updates) => {
+    updateFuncionario: async (id, updates) => {
+      const { error } = await supabase.from('funcionarios').update(updates).eq('id', id);
+      if (error) throw error;
       setFuncionarios(funcionarios.map(f => f.id === id ? { ...f, ...updates } : f));
     },
-    deleteFuncionario: (id) => {
+    deleteFuncionario: async (id) => {
+      const { error } = await supabase.from('funcionarios').delete().eq('id', id);
+      if (error) throw error;
       setFuncionarios(funcionarios.filter(f => f.id !== id));
     },
   };

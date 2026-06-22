@@ -31,16 +31,21 @@ export default function ContasPagarPage() {
     !filterStatus || c.status === filterStatus
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingId) {
-      updateContaPagar(editingId, formData);
-      setEditingId(null);
-    } else {
-      addContaPagar(formData as any);
+    try {
+      if (editingId) {
+        await updateContaPagar(editingId, formData);
+        setEditingId(null);
+      } else {
+        await addContaPagar(formData as any);
+      }
+      resetForm();
+      setShowModal(false);
+    } catch (error) {
+      console.error('Erro ao salvar conta a pagar:', error);
+      alert('Erro ao salvar conta a pagar');
     }
-    resetForm();
-    setShowModal(false);
   };
 
   const resetForm = () => {
@@ -75,9 +80,14 @@ export default function ContasPagarPage() {
     setShowModal(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Tem certeza que deseja deletar esta conta?')) {
-      deleteContaPagar(id);
+      try {
+        await deleteContaPagar(id);
+      } catch (error) {
+        console.error('Erro ao deletar conta a pagar:', error);
+        alert('Erro ao deletar conta a pagar');
+      }
     }
   };
 

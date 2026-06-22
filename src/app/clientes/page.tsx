@@ -30,26 +30,31 @@ export default function ClientesPage() {
     c.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingId) {
-      updateCliente(editingId, formData);
-      setEditingId(null);
-    } else {
-      addCliente(formData as any);
+    try {
+      if (editingId) {
+        await updateCliente(editingId, formData);
+        setEditingId(null);
+      } else {
+        await addCliente(formData as any);
+      }
+      setFormData({
+        nome: '',
+        tipo: 'pessoa_fisica',
+        cpf_cnpj: '',
+        telefone: '',
+        whatsapp: '',
+        email: '',
+        endereco: '',
+        observacoes: '',
+        ativo: true,
+      });
+      setShowModal(false);
+    } catch (error) {
+      console.error('Erro ao salvar cliente:', error);
+      alert('Erro ao salvar cliente');
     }
-    setFormData({
-      nome: '',
-      tipo: 'pessoa_fisica',
-      cpf_cnpj: '',
-      telefone: '',
-      whatsapp: '',
-      email: '',
-      endereco: '',
-      observacoes: '',
-      ativo: true,
-    });
-    setShowModal(false);
   };
 
   const handleEdit = (cliente: Cliente) => {
@@ -68,9 +73,14 @@ export default function ClientesPage() {
     setShowModal(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Tem certeza que deseja deletar este cliente?')) {
-      deleteCliente(id);
+      try {
+        await deleteCliente(id);
+      } catch (error) {
+        console.error('Erro ao deletar cliente:', error);
+        alert('Erro ao deletar cliente');
+      }
     }
   };
 

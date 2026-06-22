@@ -31,16 +31,21 @@ export default function FuncionariosPage() {
     f.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingId) {
-      updateFuncionario(editingId, formData);
-      setEditingId(null);
-    } else {
-      addFuncionario(formData as any);
+    try {
+      if (editingId) {
+        await updateFuncionario(editingId, formData);
+        setEditingId(null);
+      } else {
+        await addFuncionario(formData as any);
+      }
+      resetForm();
+      setShowModal(false);
+    } catch (error) {
+      console.error('Erro ao salvar funcionário:', error);
+      alert('Erro ao salvar funcionário');
     }
-    resetForm();
-    setShowModal(false);
   };
 
   const resetForm = () => {
@@ -75,9 +80,14 @@ export default function FuncionariosPage() {
     setShowModal(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Tem certeza que deseja deletar este funcionário?')) {
-      deleteFuncionario(id);
+      try {
+        await deleteFuncionario(id);
+      } catch (error) {
+        console.error('Erro ao deletar funcionário:', error);
+        alert('Erro ao deletar funcionário');
+      }
     }
   };
 

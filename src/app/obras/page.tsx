@@ -32,26 +32,31 @@ export default function ObrasPage() {
     o.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingId) {
-      updateObra(editingId, formData);
-      setEditingId(null);
-    } else {
-      addObra(formData as any);
+    try {
+      if (editingId) {
+        await updateObra(editingId, formData);
+        setEditingId(null);
+      } else {
+        await addObra(formData as any);
+      }
+      setFormData({
+        nome: '',
+        endereco: '',
+        cliente_id: '',
+        responsavel_id: 'admin',
+        status: 'planejamento',
+        data_inicio: '',
+        data_prevista_fim: '',
+        orcamento_previsto: 0,
+        observacoes: '',
+      });
+      setShowModal(false);
+    } catch (error) {
+      console.error('Erro ao salvar obra:', error);
+      alert('Erro ao salvar obra');
     }
-    setFormData({
-      nome: '',
-      endereco: '',
-      cliente_id: '',
-      responsavel_id: 'admin',
-      status: 'planejamento',
-      data_inicio: '',
-      data_prevista_fim: '',
-      orcamento_previsto: 0,
-      observacoes: '',
-    });
-    setShowModal(false);
   };
 
   const handleEdit = (obra: Obra) => {
@@ -70,9 +75,14 @@ export default function ObrasPage() {
     setShowModal(true);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm('Tem certeza que deseja deletar esta obra?')) {
-      deleteObra(id);
+      try {
+        await deleteObra(id);
+      } catch (error) {
+        console.error('Erro ao deletar obra:', error);
+        alert('Erro ao deletar obra');
+      }
     }
   };
 
