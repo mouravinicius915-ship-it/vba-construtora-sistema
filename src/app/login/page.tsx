@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,7 +17,6 @@ export default function LoginPage() {
     setError('');
 
     try {
-      // Validação simples para demonstração
       if (email === 'admin@vba.com' && password === 'senha123') {
         await new Promise(resolve => setTimeout(resolve, 800));
         router.push('/dashboard');
@@ -32,21 +32,30 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-      <div style={{ width: '100%', maxWidth: '28rem' }}>
-        <div style={{ background: 'white', borderRadius: '0.5rem', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', padding: '2rem' }}>
+    <div style={{ minHeight: '100vh', background: '#000000', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+      <div style={{ width: '100%', maxWidth: '32rem' }}>
+        <div style={{ background: '#1a1a1a', borderRadius: '0.75rem', border: '1px solid #333333', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.5)', padding: '2.5rem' }}>
+          {/* Logo */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2rem' }}>
-            <div style={{ width: '4rem', height: '4rem', background: '#2563eb', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
-              <span style={{ fontSize: '2rem', color: 'white' }}>🏗️</span>
-            </div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827' }}>VBA Construtora</h1>
-            <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>Sistema de Gestão</p>
+            <img
+              src="/logo/8.png"
+              alt="VBA Construtora"
+              style={{ height: '80px', marginBottom: '1rem', objectFit: 'contain' }}
+            />
+            <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#ffffff', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>
+              VBA CONSTRUTORA
+            </h1>
+            <p style={{ fontSize: '0.875rem', color: '#9ca3af', letterSpacing: '0.1em' }}>
+              VINICIUS BARRETO ARQUITETURA
+            </p>
+            <div style={{ width: '60px', height: '1px', background: 'linear-gradient(90deg, transparent, #c9a961, transparent)', margin: '1rem 0' }}></div>
           </div>
 
-          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <div style={{ marginBottom: '1rem' }}>
-              <label htmlFor="email" style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#111827', marginBottom: '0.25rem' }}>
-                E-mail
+          {/* Formulário */}
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div>
+              <label htmlFor="email" style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', color: '#e5e7eb', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>
+                EMAIL
               </label>
               <input
                 id="email"
@@ -54,15 +63,27 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="seu@email.com"
-                style={{ width: '100%', padding: '0.5rem 0.75rem', borderRadius: '0.5rem', border: '1px solid #d1d5db', background: 'white', color: '#111827', outline: 'none' }}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '0.5rem',
+                  border: '1px solid #404040',
+                  background: '#252525',
+                  color: '#ffffff',
+                  outline: 'none',
+                  fontSize: '0.95rem',
+                  transition: 'all 0.2s'
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#c9a961'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#404040'}
                 required
                 disabled={loading}
               />
             </div>
 
-            <div style={{ marginBottom: '1rem' }}>
-              <label htmlFor="password" style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#111827', marginBottom: '0.25rem' }}>
-                Senha
+            <div>
+              <label htmlFor="password" style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', color: '#e5e7eb', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>
+                SENHA
               </label>
               <input
                 id="password"
@@ -70,14 +91,26 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                style={{ width: '100%', padding: '0.5rem 0.75rem', borderRadius: '0.5rem', border: '1px solid #d1d5db', background: 'white', color: '#111827', outline: 'none' }}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '0.5rem',
+                  border: '1px solid #404040',
+                  background: '#252525',
+                  color: '#ffffff',
+                  outline: 'none',
+                  fontSize: '0.95rem',
+                  transition: 'all 0.2s'
+                }}
+                onFocus={(e) => e.currentTarget.style.borderColor = '#c9a961'}
+                onBlur={(e) => e.currentTarget.style.borderColor = '#404040'}
                 required
                 disabled={loading}
               />
             </div>
 
             {error && (
-              <div style={{ borderRadius: '0.5rem', border: '1px solid #fca5a5', background: '#fef2f2', padding: '1rem', marginBottom: '1rem', fontSize: '0.875rem', color: '#7f1d1d' }}>
+              <div style={{ borderRadius: '0.5rem', border: '1px solid #7f1d1d', background: '#7f1d1d33', padding: '0.75rem 1rem', fontSize: '0.875rem', color: '#fca5a5' }}>
                 {error}
               </div>
             )}
@@ -85,23 +118,30 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              style={{ width: '100%', padding: '0.5rem 1rem', borderRadius: '0.5rem', background: '#2563eb', color: 'white', fontWeight: '500', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? 0.5 : 1 }}
+              style={{
+                width: '100%',
+                padding: '0.875rem 1rem',
+                borderRadius: '0.5rem',
+                border: 'none',
+                background: 'linear-gradient(135deg, #c9a961 0%, #b8956a 100%)',
+                color: '#000000',
+                fontWeight: '700',
+                fontSize: '1rem',
+                cursor: loading ? 'not-allowed' : 'pointer',
+                opacity: loading ? 0.7 : 1,
+                transition: 'all 0.2s',
+                letterSpacing: '0.05em'
+              }}
+              onMouseEnter={(e) => !loading && (e.currentTarget.style.transform = 'translateY(-2px)')}
+              onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
             >
-              {loading ? 'Entrando...' : 'Entrar'}
+              {loading ? 'ENTRANDO...' : 'ENTRAR'}
             </button>
           </form>
 
-          <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid #e5e7eb', textAlign: 'center', fontSize: '0.875rem', color: '#4b5563' }}>
-            <p>Credenciais de demonstração:</p>
-            <p style={{ marginTop: '0.5rem', fontSize: '0.75rem' }}>
-              <strong>Email:</strong> admin@vba.com<br />
-              <strong>Senha:</strong> senha123
-            </p>
-          </div>
-        </div>
-
-        <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: 'white' }}>
-          <p>© 2026 VBA Construtora. Todos os direitos reservados.</p>
+          <p style={{ fontSize: '0.75rem', color: '#6b7280', textAlign: 'center', marginTop: '1.5rem', letterSpacing: '0.05em' }}>
+            © 2026 VBA CONSTRUTORA - TODOS OS DIREITOS RESERVADOS
+          </p>
         </div>
       </div>
     </div>
