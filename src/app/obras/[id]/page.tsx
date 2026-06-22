@@ -89,7 +89,7 @@ export default function ObraDetalhesPage() {
               <div>
                 <p className="text-sm text-slate-600 font-medium">Data Fim Prevista</p>
                 <p className="text-slate-900 font-semibold mt-1">
-                  {new Date(obra.data_fim_prevista).toLocaleDateString('pt-BR')}
+                  {new Date(obra.data_prevista_fim).toLocaleDateString('pt-BR')}
                 </p>
               </div>
             </div>
@@ -99,7 +99,7 @@ export default function ObraDetalhesPage() {
             <p className="text-sm text-blue-600 font-medium">Orçamento</p>
             <div className="flex items-baseline gap-2 mt-2">
               <h3 className="text-3xl font-bold text-blue-900">
-                R$ {obra.orcamento.toLocaleString('pt-BR')}
+                R$ {obra.orcamento_previsto.toLocaleString('pt-BR')}
               </h3>
               <span className="text-sm text-blue-600">(Total estimado)</span>
             </div>

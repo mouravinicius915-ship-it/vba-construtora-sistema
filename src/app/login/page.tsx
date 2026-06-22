@@ -43,7 +43,7 @@ export default function LoginPage() {
             <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>Sistema de Gestão</p>
           </div>
 
-          <form onSubmit={handleLogin} style={{ space: '1rem' }}>
+          <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div style={{ marginBottom: '1rem' }}>
               <label htmlFor="email" style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#111827', marginBottom: '0.25rem' }}>
                 E-mail
