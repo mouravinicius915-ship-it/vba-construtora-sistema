@@ -179,8 +179,10 @@ export default function DocumentosPage() {
     'NF': 'warning',
     'Recibo': 'success',
     'Projeto': 'primary',
+    'Projeto SketchUp': 'primary',
+    'AutoCAD': 'primary',
     'Foto': 'info',
-    'Outro': 'secondary',
+    'Outro': 'info',
   } as const;
 
   return (
@@ -307,7 +309,7 @@ export default function DocumentosPage() {
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <Badge label={doc.tipo} variant={tipoColors[doc.tipo as keyof typeof tipoColors] || 'secondary'} />
+                          <Badge label={doc.tipo} variant={tipoColors[doc.tipo as keyof typeof tipoColors] || 'info'} />
                         </td>
                         <td className="px-4 py-3 text-slate-600">
                           {new Date(doc.dataUpload).toLocaleDateString('pt-BR')}
@@ -359,7 +361,7 @@ export default function DocumentosPage() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <Badge label={doc.tipo} variant={tipoColors[doc.tipo as keyof typeof tipoColors] || 'secondary'} />
+                        <Badge label={doc.tipo} variant={tipoColors[doc.tipo as keyof typeof tipoColors] || 'info'} />
                       </td>
                       <td className="px-4 py-3 text-slate-600">
                         {new Date(doc.dataUpload).toLocaleDateString('pt-BR')}
@@ -412,7 +414,7 @@ export default function DocumentosPage() {
                             </div>
                           </td>
                           <td className="px-4 py-3">
-                            <Badge label={doc.tipo} variant={tipoColors[doc.tipo as keyof typeof tipoColors] || 'secondary'} />
+                            <Badge label={doc.tipo} variant={tipoColors[doc.tipo as keyof typeof tipoColors] || 'info'} />
                           </td>
                           <td className="px-4 py-3 text-slate-600">
                             {new Date(doc.dataUpload).toLocaleDateString('pt-BR')}
