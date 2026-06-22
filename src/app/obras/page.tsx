@@ -207,14 +207,13 @@ export default function ObrasPage() {
 
               {/* Cliente */}
               <div>
-                <label className="block text-sm font-medium text-slate-900 mb-1">Cliente *</label>
+                <label className="block text-sm font-medium text-slate-900 mb-1">Cliente (Opcional)</label>
                 <select
-                  required
                   value={formData.cliente_id}
                   onChange={(e) => setFormData({ ...formData, cliente_id: e.target.value })}
                   className="w-full px-4 py-2 rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="">Selecione um cliente</option>
+                  <option value="">Sem cliente</option>
                   {clientes.map(c => (
                     <option key={c.id} value={c.id}>{c.nome}</option>
                   ))}
