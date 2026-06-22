@@ -21,7 +21,7 @@ export default function LoginPage() {
         await new Promise(resolve => setTimeout(resolve, 800));
         router.push('/dashboard');
       } else {
-        setError('Email ou senha inválidos. Use: admin@vba.com / senha123');
+        setError('Email ou senha inválidos');
       }
     } catch (err) {
       setError('Erro ao fazer login');
