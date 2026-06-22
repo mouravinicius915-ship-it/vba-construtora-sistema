@@ -37,11 +37,23 @@ export default function LoginPage() {
         <div style={{ background: '#1a1a1a', borderRadius: '0.75rem', border: '1px solid #333333', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.5)', padding: '2.5rem' }}>
           {/* Logo */}
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2rem' }}>
-            <img
-              src="/logo/8.png"
-              alt="VBA Construtora"
-              style={{ height: '80px', marginBottom: '1rem', objectFit: 'contain' }}
-            />
+            <svg width="120" height="80" viewBox="0 0 200 120" style={{ marginBottom: '1rem' }}>
+              {/* VBA */}
+              <text x="100" y="40" fontSize="36" fontWeight="bold" fill="#ffffff" textAnchor="middle" fontFamily="serif" letterSpacing="8">
+                VBA
+              </text>
+              {/* Linha decorativa */}
+              <line x1="50" y1="50" x2="150" y2="50" stroke="#c9a961" strokeWidth="2" />
+              {/* CONSTRUTORA */}
+              <text x="100" y="75" fontSize="14" fill="#c9a961" textAnchor="middle" fontFamily="serif" letterSpacing="3">
+                CONSTRUTORA
+              </text>
+              {/* Casa*/}
+              <g transform="translate(155, 15)">
+                <polygon points="0,20 10,0 20,20" fill="none" stroke="#c9a961" strokeWidth="1.5" />
+                <rect x="3" y="15" width="14" height="12" fill="none" stroke="#c9a961" strokeWidth="1.5" />
+              </g>
+            </svg>
             <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#ffffff', marginBottom: '0.5rem', letterSpacing: '0.05em' }}>
               VBA CONSTRUTORA
             </h1>
