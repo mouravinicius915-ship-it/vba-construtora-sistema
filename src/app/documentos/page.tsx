@@ -172,7 +172,7 @@ export default function DocumentosPage() {
     }
   };
 
-  const tipoColors = {
+  const tipoColors: Record<string, 'primary' | 'success' | 'warning' | 'danger' | 'info'> = {
     'Contrato': 'primary',
     'RRT': 'info',
     'ART': 'info',
@@ -183,7 +183,7 @@ export default function DocumentosPage() {
     'AutoCAD': 'primary',
     'Foto': 'info',
     'Outro': 'info',
-  } as const;
+  };
 
   return (
     <MainLayout>
@@ -309,7 +309,7 @@ export default function DocumentosPage() {
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <Badge label={doc.tipo} variant={tipoColors[doc.tipo as keyof typeof tipoColors] || 'info'} />
+                          <Badge label={doc.tipo} variant={tipoColors[doc.tipo] || 'info'} />
                         </td>
                         <td className="px-4 py-3 text-slate-600">
                           {new Date(doc.dataUpload).toLocaleDateString('pt-BR')}
@@ -361,7 +361,7 @@ export default function DocumentosPage() {
                         </div>
                       </td>
                       <td className="px-4 py-3">
-                        <Badge label={doc.tipo} variant={tipoColors[doc.tipo as keyof typeof tipoColors] || 'info'} />
+                        <Badge label={doc.tipo} variant={tipoColors[doc.tipo] || 'info'} />
                       </td>
                       <td className="px-4 py-3 text-slate-600">
                         {new Date(doc.dataUpload).toLocaleDateString('pt-BR')}
@@ -414,7 +414,7 @@ export default function DocumentosPage() {
                             </div>
                           </td>
                           <td className="px-4 py-3">
-                            <Badge label={doc.tipo} variant={tipoColors[doc.tipo as keyof typeof tipoColors] || 'info'} />
+                            <Badge label={doc.tipo} variant={tipoColors[doc.tipo] || 'info'} />
                           </td>
                           <td className="px-4 py-3 text-slate-600">
                             {new Date(doc.dataUpload).toLocaleDateString('pt-BR')}
